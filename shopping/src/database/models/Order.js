@@ -9,19 +9,28 @@ const OrderSchema = new Schema({
     status: String,
     txnId: String,
     items: [
-        {   
-            product: {type: Schema.Types.ObjectId, ref: 'product', required: true} ,
-            unit: { type: Number, require: true} 
+        {
+            product: {
+                _id: { type: String, require: true },
+                name: String,
+                desc: String,
+                banner: String,
+                type: String,
+                unit: Number,
+                price: Number,
+                suplier: String
+            },
+            unit: { type: Number, require: true }
         }
     ]
 },
-{
-    toJSON: {
-        transform(doc, ret){
-            delete ret.__v;
-        }
-    },
-    timestamps: true
-});
+    {
+        toJSON: {
+            transform(doc, ret) {
+                delete ret.__v;
+            }
+        },
+        timestamps: true
+    });
 
-module.exports =  mongoose.model('order', OrderSchema);
+module.exports = mongoose.model('order', OrderSchema);

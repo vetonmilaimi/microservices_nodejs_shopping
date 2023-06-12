@@ -98,46 +98,41 @@ class CustomerRepository {
 
   async AddWishlistItem(customerId, { _id, name, desc, price, available, banner }) {
 
-    const prouduct = { _id, name, desc, price, available, banner }
+    const product = {
+      _id, name, desc, price, available, banner
+    };
 
-    try {
-      const profile = await CustomerModel.findById(customerId).populate(
-        "wishlist"
-      );
+    const profile = await CustomerModel.findById(customerId).populate('wishlist');
 
-      if (profile) {
-        let wishlist = profile.wishlist;
+    if (profile) {
 
-        if (wishlist.length > 0) {
-          let isExist = false;
-          wishlist.map((item) => {
-            if (item._id.toString() === product._id.toString()) {
-              const index = wishlist.indexOf(item);
-              wishlist.splice(index, 1);
-              isExist = true;
-            }
-          });
+      let wishlist = profile.wishlist;
 
-          if (!isExist) {
-            wishlist.push(product);
+      if (wishlist.length > 0) {
+        let isExist = false;
+        wishlist.map(item => {
+          if (item._id.toString() === product._id.toString()) {
+            const index = wishlist.indexOf(item);
+            wishlist.splice(index, 1);
+            isExist = true;
           }
-        } else {
+        });
+
+        if (!isExist) {
           wishlist.push(product);
         }
 
-        profile.wishlist = wishlist;
+      } else {
+        wishlist.push(product);
       }
 
-      const profileResult = await profile.save();
-
-      return profileResult.wishlist;
-    } catch (err) {
-      throw new APIError(
-        "API Error",
-        STATUS_CODES.INTERNAL_ERROR,
-        "Unable to Add to WishList"
-      );
+      profile.wishlist = wishlist;
     }
+
+    const profileResult = await profile.save();
+
+    return profileResult.wishlist;
+
   }
 
   async AddCartItem(customerId, { _id, name, price, banner }, qty, isRemove) {
